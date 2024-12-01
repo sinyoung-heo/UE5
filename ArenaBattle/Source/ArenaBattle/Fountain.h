@@ -3,8 +3,11 @@
 #pragma once
 
 #include "ArenaBattle.h"
+#include "GameFramework/RotatingMovementComponent.h"
 #include "GameFramework/Actor.h"
 #include "Fountain.generated.h"
+
+class URotatingMovementComponent;
 
 UCLASS()
 class ARENABATTLE_API AFountain : public AActor
@@ -44,4 +47,7 @@ public:
 private:
 	UPROPERTY(EditAnywhere, Category=Stat, Meta = (AllowPrivateAccess = true))
 	float RotateSpeed;
+
+	UPROPERTY(VisibleAnywhere)
+	URotatingMovementComponent* Movement;
 };
