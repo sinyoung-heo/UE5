@@ -22,6 +22,13 @@ AFountain::AFountain()
 	Water->SetRelativeLocation(FVector(0.0f, 0.0f, 135.0f));
 	Light->SetRelativeLocation(FVector(0.0f, 0.0f, 195.0f));
 	Splash->SetRelativeLocation(FVector(0.0f, 0.0f, 195.0f));
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(
+		TEXT("/Game/InfinityBladeGrassLands/Effects/FX_Ambient/Water/P_Water_Fountain_Splash_Base_01"));
+	if (ParticleAsset.Succeeded())
+	{
+		Splash->SetTemplate(ParticleAsset.Object);
+	}
 }
 
 // Called when the game starts or when spawned
