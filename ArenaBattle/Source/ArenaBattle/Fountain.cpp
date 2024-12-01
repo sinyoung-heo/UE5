@@ -54,6 +54,18 @@ void AFountain::BeginPlay()
 	ABLOG(Warning, TEXT("Actor Name : %s, ID : %d, Location X : %0.3f"), *GetName(), ID, GetActorLocation().X);
 }
 
+void AFountain::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	ABLOG_S(Warning);
+}
+
+void AFountain::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	ABLOG_S(Warning);
+}
+
 // Called every frame
 void AFountain::Tick(float DeltaTime)
 {
