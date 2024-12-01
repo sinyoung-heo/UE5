@@ -50,6 +50,7 @@ void AFountain::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	UE_LOG(ArenaBattle, Warning, TEXT("Actor Name : %s, ID : %d, Location X : %0.3f"), *GetName(), ID, GetActorLocation().X);
 }
 
 // Called every frame
