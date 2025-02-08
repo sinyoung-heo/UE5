@@ -2,4 +2,9 @@
 
 
 #include "ABGameMode.h"
+#include "ABPawn.h"
 
+AABGameMode::AABGameMode()
+{
+	DefaultPawnClass = AABPawn::StaticClass();
+}
