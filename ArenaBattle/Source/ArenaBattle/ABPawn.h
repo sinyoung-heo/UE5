@@ -7,6 +7,10 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "ABPawn.generated.h"
 
+class UInputMappingContext;
+class UInputAction;
+struct FInputActionValue;
+
 UCLASS()
 class ARENABATTLE_API AABPawn : public APawn
 {
@@ -36,12 +40,21 @@ public:
 	UPROPERTY(VisibleAnywhere, Category=Visual)
 	USkeletalMeshComponent* Mesh;
 
-	UPROPERTY(VisibleAnywhere, Category=Movement)
+	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UFloatingPawnMovement* Movement;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* MappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* MoveAction;
 
 	UPROPERTY(VisibleAnywhere, Category=Camera)
 	USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleAnywhere, Category=Camera)
 	UCameraComponent* Camera;
+
+protected:
+	void Move(const FInputActionValue& Value);
 };

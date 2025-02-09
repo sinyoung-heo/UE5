@@ -2,6 +2,10 @@
 
 
 #include "ABPawn.h"
+#include "InputMappingContext.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputActionValue.h"
 
 // Sets default values
 AABPawn::AABPawn()
@@ -31,6 +35,18 @@ AABPawn::AABPawn()
 	{
 		Mesh->SetSkeletalMesh(SK_CARDBOARD.Object);
 	}
+
+	static ConstructorHelpers::FObjectFinder<UInputMappingContext> AB_IMC(TEXT("/Game/Book/Input/AB_IMC"));
+	if (AB_IMC.Succeeded())
+	{
+		MappingContext = AB_IMC.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> ABA_Move(TEXT("/Game/Book/Input/ABA_Move"));
+	if (ABA_Move.Succeeded())
+	{
+		MoveAction = ABA_Move.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -38,6 +54,13 @@ void AABPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			SubSystem->AddMappingContext(MappingContext, 0);
+		}
+	}
 }
 
 // Called every frame
@@ -64,5 +87,26 @@ void AABPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AABPawn::Move);
+	}
+}
+
+void AABPawn::Move(const FInputActionValue& Value)
+{
+	FVector2D MovementVector = Value.Get<FVector2D>();
+
+	if (Controller != nullptr)
+	{
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		AddMovementInput(ForwardDirection, MovementVector.Y);
+		AddMovementInput(RightDirection, MovementVector.X);
+	}
 }
 
