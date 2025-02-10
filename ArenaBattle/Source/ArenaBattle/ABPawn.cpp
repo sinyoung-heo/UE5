@@ -35,6 +35,13 @@ AABPawn::AABPawn()
 		Mesh->SetSkeletalMesh(SK_CARDBOARD.Object);
 	}
 
+	Mesh->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	static ConstructorHelpers::FClassFinder<UAnimInstance> WARRIOR_ANIM(TEXT("/Game/Book/Animations/WarriorAnimationBlueprint.WarriorAnimationBlueprint_C"));
+	if (WARRIOR_ANIM.Succeeded())
+	{
+		Mesh->SetAnimInstanceClass(WARRIOR_ANIM.Class);
+	}
+
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> AB_IMC(TEXT("/Game/Book/Input/AB_IMC"));
 	if (AB_IMC.Succeeded())
 	{
@@ -52,13 +59,6 @@ AABPawn::AABPawn()
 void AABPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	Mesh->SetAnimationMode(EAnimationMode::AnimationSingleNode);
-	UAnimationAsset* AnimAsset = LoadObject<UAnimationAsset>(nullptr, TEXT("/Game/Book/Animations/WarriorRun"));
-	if (AnimAsset)
-	{
-		Mesh->PlayAnimation(AnimAsset, true);
-	}
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
