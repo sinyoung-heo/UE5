@@ -24,8 +24,7 @@ AABPawn::AABPawn()
 	SpringArm->SetupAttachment(Capsule);
 	Camera->SetupAttachment(SpringArm);
 
-	Capsule->SetCapsuleHalfHeight(88.0f);
-	Capsule->SetCapsuleRadius(34.0f);
+	Capsule->InitCapsuleSize(34.0f, 88.0f);
 	Mesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
 	SpringArm->TargetArmLength = 400.0f;
 	SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
