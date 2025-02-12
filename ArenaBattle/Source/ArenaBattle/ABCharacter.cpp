@@ -47,6 +47,12 @@ AABCharacter::AABCharacter()
 	{
 		MoveAction = ABA_Move.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> ABA_Look(TEXT("/Game/Book/Input/ABA_Look"));
+	if (ABA_Look.Succeeded())
+	{
+		LookAction = ABA_Look.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -78,6 +84,7 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AABCharacter::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AABCharacter::Look);
 	}
 }
 
@@ -95,6 +102,19 @@ void AABCharacter::Move(const FInputActionValue& Value)
 
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
+	}
+}
+
+void AABCharacter::Look(const FInputActionValue& Value)
+{
+	// input is a Vector2D
+	FVector2D LookAxisVector = Value.Get<FVector2D>();
+
+	if (Controller)
+	{
+		// add yaw and pitch input to controller
+		AddControllerPitchInput(LookAxisVector.Y);
+		AddControllerYawInput(LookAxisVector.X);
 	}
 }
 
