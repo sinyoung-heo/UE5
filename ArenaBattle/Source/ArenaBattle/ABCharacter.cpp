@@ -54,7 +54,7 @@ AABCharacter::AABCharacter()
 		LookAction = ABA_Look.Object;
 	}
 
-	SetControlMode(0);
+	SetControlMode(EControlMode::DIABLO);
 }
 
 // Called when the game starts or when spawned
@@ -71,21 +71,38 @@ void AABCharacter::BeginPlay()
 	}
 }
 
-void AABCharacter::SetControlMode(int32 ControlMode)
+void AABCharacter::SetControlMode(EControlMode NewControlMode)
 {
-	if (0 == ControlMode && SpringArm)
+	CurrentControlMode = NewControlMode;
+
+	switch (CurrentControlMode)
 	{
-		SpringArm->TargetArmLength = 450.0f;
-		SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
-		SpringArm->bUsePawnControlRotation = true;
-		SpringArm->bInheritPitch = true;
-		SpringArm->bInheritRoll = true;
-		SpringArm->bInheritYaw = true;
-		SpringArm->bDoCollisionTest = true;
-		bUseControllerRotationYaw = false;
-		
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+	case AABCharacter::EControlMode::GTA:
+		{
+			SpringArm->TargetArmLength = 450.0f;
+			SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
+			SpringArm->bUsePawnControlRotation = true;
+			SpringArm->bInheritPitch = true;
+			SpringArm->bInheritRoll = true;
+			SpringArm->bInheritYaw = true;
+			SpringArm->bDoCollisionTest = true;
+			bUseControllerRotationYaw = false;
+			GetCharacterMovement()->bOrientRotationToMovement = true;
+			GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+		}
+		break;
+	case AABCharacter::EControlMode::DIABLO:
+		{
+			SpringArm->TargetArmLength = 800.0f;
+			SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
+			SpringArm->bUsePawnControlRotation = false;
+			SpringArm->bInheritPitch = false;
+			SpringArm->bInheritRoll = false;
+			SpringArm->bInheritYaw = false;
+			SpringArm->bDoCollisionTest = false;
+			bUseControllerRotationYaw = true;
+		}
+		break;
 	}
 }
 
@@ -94,6 +111,20 @@ void AABCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	switch (CurrentControlMode)
+	{
+	case AABCharacter::EControlMode::GTA:
+		{
+			__noop;
+		}
+		break;
+	case AABCharacter::EControlMode::DIABLO:
+		{
+			GetController()->SetControlRotation(FRotationMatrix::MakeFromX(DirectionToMove).Rotator());
+			AddMovementInput(DirectionToMove);
+		}
+		break;
+	}
 }
 
 // Called to bind functionality to input
@@ -112,8 +143,21 @@ void AABCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), MovementVector.Y); // 카메라의 look 벡터
-	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), MovementVector.X);	// 카메라의 right 벡터
+	switch (CurrentControlMode)
+	{
+	case AABCharacter::EControlMode::GTA:
+		{
+			AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), MovementVector.Y); // 카메라의 look 벡터
+			AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), MovementVector.X);	// 카메라의 right 벡터
+		}
+		break;
+	case AABCharacter::EControlMode::DIABLO:
+		{
+			DirectionToMove.X = MovementVector.Y;
+			DirectionToMove.Y = MovementVector.X;
+		}
+		break;
+	}
 }
 
 void AABCharacter::Look(const FInputActionValue& Value)
@@ -123,9 +167,21 @@ void AABCharacter::Look(const FInputActionValue& Value)
 
 	if (Controller)
 	{
-		// add yaw and pitch input to controller
-		AddControllerPitchInput(LookAxisVector.Y);
-		AddControllerYawInput(LookAxisVector.X);
+		switch (CurrentControlMode)
+		{
+		case AABCharacter::EControlMode::GTA:
+			{
+				// add yaw and pitch input to controller
+				AddControllerPitchInput(LookAxisVector.Y);
+				AddControllerYawInput(LookAxisVector.X);
+			}
+			break;
+		case AABCharacter::EControlMode::DIABLO:
+			{
+				__noop;
+			}
+			break;
+		}
 	}
 }
 
