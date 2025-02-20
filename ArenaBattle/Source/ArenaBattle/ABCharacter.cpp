@@ -53,6 +53,8 @@ AABCharacter::AABCharacter()
 	{
 		LookAction = ABA_Look.Object;
 	}
+
+	SetControlMode(0);
 }
 
 // Called when the game starts or when spawned
@@ -66,6 +68,24 @@ void AABCharacter::BeginPlay()
 		{
 			SubSystem->AddMappingContext(MappingContext, 0);
 		}
+	}
+}
+
+void AABCharacter::SetControlMode(int32 ControlMode)
+{
+	if (0 == ControlMode && SpringArm)
+	{
+		SpringArm->TargetArmLength = 450.0f;
+		SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
+		SpringArm->bUsePawnControlRotation = true;
+		SpringArm->bInheritPitch = true;
+		SpringArm->bInheritRoll = true;
+		SpringArm->bInheritYaw = true;
+		SpringArm->bDoCollisionTest = true;
+		bUseControllerRotationYaw = false;
+		
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 	}
 }
 
@@ -92,17 +112,8 @@ void AABCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	if (Controller)
-	{
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
-	}
+	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), MovementVector.Y); // 카메라의 look 벡터
+	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), MovementVector.X);	// 카메라의 right 벡터
 }
 
 void AABCharacter::Look(const FInputActionValue& Value)
