@@ -54,6 +54,12 @@ AABCharacter::AABCharacter()
 		LookAction = ABA_Look.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> ABA_ViewChange(TEXT("/Game/Book/Input/ABA_ViewChange"));
+	if (ABA_ViewChange.Succeeded())
+	{
+		ViewChangeAction = ABA_ViewChange.Object;
+	}
+
 	SetControlMode(EControlMode::DIABLO);
 }
 
@@ -140,6 +146,7 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AABCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AABCharacter::Look);
+		EnhancedInputComponent->BindAction(ViewChangeAction, ETriggerEvent::Triggered, this, &AABCharacter::ViewChange);
 	}
 }
 
@@ -183,6 +190,29 @@ void AABCharacter::Look(const FInputActionValue& Value)
 		case AABCharacter::EControlMode::DIABLO:
 			{
 				__noop;
+			}
+			break;
+		}
+	}
+}
+
+void AABCharacter::ViewChange(const FInputActionValue& Value)
+{
+	auto isKeyUp = Value.Get<bool>();
+
+	if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::LeftShift) && !isKeyUp)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Shift + V Pressed!"));
+		switch (CurrentControlMode)
+		{
+		case AABCharacter::EControlMode::GTA:
+			{
+				SetControlMode(EControlMode::DIABLO);
+			}
+			break;
+		case AABCharacter::EControlMode::DIABLO:
+			{
+				SetControlMode(EControlMode::GTA);
 			}
 			break;
 		}
