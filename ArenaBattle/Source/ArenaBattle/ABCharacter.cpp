@@ -10,7 +10,7 @@
 // Sets default values
 AABCharacter::AABCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
@@ -61,6 +61,9 @@ AABCharacter::AABCharacter()
 	}
 
 	SetControlMode(EControlMode::DIABLO);
+
+	ArmLengthSpeed = 3.0f;
+	ArmRotationSpeed = 10.0f;
 }
 
 // Called when the game starts or when spawned
@@ -85,8 +88,8 @@ void AABCharacter::SetControlMode(EControlMode NewControlMode)
 	{
 	case AABCharacter::EControlMode::GTA:
 		{
-			SpringArm->TargetArmLength = 450.0f;
-			SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
+			ArmLengthTo = 450.0f;
+
 			SpringArm->bUsePawnControlRotation = true;
 			SpringArm->bInheritPitch = true;
 			SpringArm->bInheritRoll = true;
@@ -100,8 +103,9 @@ void AABCharacter::SetControlMode(EControlMode NewControlMode)
 		break;
 	case AABCharacter::EControlMode::DIABLO:
 		{
-			SpringArm->TargetArmLength = 800.0f;
-			SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
+			ArmLengthTo = 800.0f;
+			ArmRotationTo = FRotator(-45.0f, 0.0f, 0.0f);
+
 			SpringArm->bUsePawnControlRotation = false;
 			SpringArm->bInheritPitch = false;
 			SpringArm->bInheritRoll = false;
@@ -121,6 +125,8 @@ void AABCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, ArmLengthTo, DeltaTime, ArmLengthSpeed);
+
 	switch (CurrentControlMode)
 	{
 	case AABCharacter::EControlMode::GTA:
@@ -130,6 +136,7 @@ void AABCharacter::Tick(float DeltaTime)
 		break;
 	case AABCharacter::EControlMode::DIABLO:
 		{
+			SpringArm->SetRelativeRotation(FMath::RInterpTo(SpringArm->GetRelativeRotation(), ArmRotationTo, DeltaTime, ArmRotationSpeed));
 			GetController()->SetControlRotation(FRotationMatrix::MakeFromX(DirectionToMove).Rotator());
 			AddMovementInput(DirectionToMove);
 		}
@@ -207,11 +214,13 @@ void AABCharacter::ViewChange(const FInputActionValue& Value)
 		{
 		case AABCharacter::EControlMode::GTA:
 			{
+				GetController()->SetControlRotation(GetActorRotation());
 				SetControlMode(EControlMode::DIABLO);
 			}
 			break;
 		case AABCharacter::EControlMode::DIABLO:
 			{
+				GetController()->SetControlRotation(SpringArm->GetRelativeRotation());
 				SetControlMode(EControlMode::GTA);
 			}
 			break;
