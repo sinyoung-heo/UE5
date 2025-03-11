@@ -16,6 +16,7 @@ class ARENABATTLE_API UABAnimInstance : public UAnimInstance
 	
 public:
 	UABAnimInstance();
+	virtual void NativeUpdateAnimation(float DeltaSeconds);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Pawn, Meta=(AllowPrivateAccess=true))
