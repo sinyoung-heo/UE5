@@ -160,7 +160,7 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AABCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AABCharacter::Look);
-		EnhancedInputComponent->BindAction(ViewChangeAction, ETriggerEvent::Triggered, this, &AABCharacter::ViewChange);
+		EnhancedInputComponent->BindAction(ViewChangeAction, ETriggerEvent::Started, this, &AABCharacter::ViewChange);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	}
@@ -214,9 +214,7 @@ void AABCharacter::Look(const FInputActionValue& Value)
 
 void AABCharacter::ViewChange(const FInputActionValue& Value)
 {
-	auto isKeyUp = Value.Get<bool>();
-
-	if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::LeftShift) && !isKeyUp)
+	if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::LeftShift))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Shift + V Pressed!"));
 		switch (CurrentControlMode)
