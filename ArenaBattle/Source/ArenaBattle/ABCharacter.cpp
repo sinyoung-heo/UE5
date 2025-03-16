@@ -78,6 +78,8 @@ AABCharacter::AABCharacter()
 	ArmLengthSpeed = 3.0f;
 	ArmRotationSpeed = 10.0f;
 	GetCharacterMovement()->JumpZVelocity = 800.0f;
+
+	IsAttacking = false;
 }
 
 // Called when the game starts or when spawned
@@ -155,6 +157,17 @@ void AABCharacter::Tick(float DeltaTime)
 			AddMovementInput(DirectionToMove);
 		}
 		break;
+	}
+}
+
+void AABCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	auto AnimInstace = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstace)
+	{
+		AnimInstace->OnMontageEnded.AddDynamic(this, &AABCharacter::OnAttackMontageEnded);
 	}
 }
 
@@ -246,11 +259,21 @@ void AABCharacter::ViewChange(const FInputActionValue& Value)
 void AABCharacter::Attack(const FInputActionValue& Value)
 {
 	ABLOG_S(Warning);
+	if (IsAttacking)
+		return;
 	
 	auto AnimInstance = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
 	if (nullptr == AnimInstance)
 		return;
 
 	AnimInstance->PlayAttackMontage();
+	IsAttacking = true;
+}
+
+void AABCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{	
+	ABLOG_S(Warning);
+
+	IsAttacking = false;
 }
 
