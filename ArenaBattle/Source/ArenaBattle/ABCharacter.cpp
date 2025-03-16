@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "ABAnimInstance.h"
 
 // Sets default values
 AABCharacter::AABCharacter()
@@ -64,6 +65,12 @@ AABCharacter::AABCharacter()
 	if (ABA_Jump.Succeeded())
 	{
 		JumpAction = ABA_Jump.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> ABA_Attack(TEXT("/Script/EnhancedInput.InputAction'/Game/Book/Input/ABA_Attack.ABA_Attack'"));
+	if (ABA_Attack.Succeeded())
+	{
+		AttackAction = ABA_Attack.Object;
 	}
 
 	SetControlMode(EControlMode::DIABLO);
@@ -163,6 +170,7 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(ViewChangeAction, ETriggerEvent::Started, this, &AABCharacter::ViewChange);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AABCharacter::Attack);
 	}
 }
 
@@ -233,5 +241,16 @@ void AABCharacter::ViewChange(const FInputActionValue& Value)
 			break;
 		}
 	}
+}
+
+void AABCharacter::Attack(const FInputActionValue& Value)
+{
+	ABLOG_S(Warning);
+	
+	auto AnimInstance = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
+	if (nullptr == AnimInstance)
+		return;
+
+	AnimInstance->PlayAttackMontage();
 }
 
