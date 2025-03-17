@@ -164,10 +164,10 @@ void AABCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	auto AnimInstace = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
-	if (AnimInstace)
+	ABAnim = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
+	if (ABAnim)
 	{
-		AnimInstace->OnMontageEnded.AddDynamic(this, &AABCharacter::OnAttackMontageEnded);
+		ABAnim->OnMontageEnded.AddDynamic(this, &AABCharacter::OnAttackMontageEnded);
 	}
 }
 
@@ -261,12 +261,8 @@ void AABCharacter::Attack(const FInputActionValue& Value)
 	ABLOG_S(Warning);
 	if (IsAttacking)
 		return;
-	
-	auto AnimInstance = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
-	if (nullptr == AnimInstance)
-		return;
 
-	AnimInstance->PlayAttackMontage();
+	ABAnim->PlayAttackMontage();
 	IsAttacking = true;
 }
 
