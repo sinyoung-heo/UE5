@@ -30,4 +30,8 @@ public:
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* AttackMontage;
+
+private:
+	UFUNCTION()
+	void AnimNotify_AttackHitCheck();
 };
