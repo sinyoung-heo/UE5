@@ -73,7 +73,7 @@ AABCharacter::AABCharacter()
 		AttackAction = ABA_Attack.Object;
 	}
 
-	SetControlMode(EControlMode::DIABLO);
+	SetControlMode(EControlMode::GTA);
 
 	ArmLengthSpeed = 3.0f;
 	ArmRotationSpeed = 10.0f;
