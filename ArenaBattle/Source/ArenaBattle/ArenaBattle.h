@@ -14,6 +14,5 @@ DECLARE_LOG_CATEGORY_EXTERN(ArenaBattle, Log, All);
     if(!Expr)\
     {\
         ABLOG(Error, TEXT("ASSERTION : %s"), TEXT("'"#Expr"'"));\
-        return __VA_ARGS__;\
     }\
 }
