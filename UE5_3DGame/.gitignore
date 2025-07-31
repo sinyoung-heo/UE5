@@ -58,7 +58,7 @@
 DerivedDataCache/*
 
 # Content folder exceptions
-# /Content/StarterContent/
+/Content/StarterContent/
 /Content/Collections/
 /Content/Developers/
 
