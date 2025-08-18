@@ -2,5 +2,6 @@
 
 #include "UE5_Cxx.h"
 #include "Modules/ModuleManager.h"
+#include "R1/R1LogChannels.h"
 
 IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, UE5_Cxx, "UE5_Cxx" );
