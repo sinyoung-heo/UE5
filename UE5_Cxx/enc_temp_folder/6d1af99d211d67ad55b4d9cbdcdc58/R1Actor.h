@@ -31,7 +31,7 @@ protected:
 
 	//UR1Object* Obj2;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Stat)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=Stat)
 	int32 Hp = 100;
 
 	UPROPERTY(VisibleAnywhere)
