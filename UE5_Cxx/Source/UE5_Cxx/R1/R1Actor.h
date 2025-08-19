@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "R1Actor.generated.h"
 
+class UR1Object;
+
 UCLASS()
 class UE5_CXX_API AR1Actor : public AActor
 {
@@ -22,5 +24,11 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	UPROPERTY()
+	UR1Object* Obj1;
+
+	UR1Object* Obj2;
 
 };
