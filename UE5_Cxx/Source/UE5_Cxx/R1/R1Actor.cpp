@@ -4,6 +4,7 @@
 #include "R1Actor.h"
 #include "R1Object.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AR1Actor::AR1Actor()
@@ -24,11 +25,37 @@ AR1Actor::AR1Actor()
 void AR1Actor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Target = UGameplayStatics::GetActorOfClass(GetWorld(), AR1Actor::StaticClass());
+
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TEXT("Rookiss"), Actors);
+	if (false == Actors.IsEmpty())
+	{
+		Target = *(Actors.begin());
+	}
 }
 
 // Called every frame
 void AR1Actor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (Target != nullptr)
+	{
+
+		float Speed = 50.0f;
+		float Distance = DeltaTime * Speed;
+
+		FVector Location = GetActorLocation();
+
+		FVector DirectionVector = Target->GetActorLocation() - GetActorLocation();
+		DirectionVector.Normalize();
+
+		FVector NewLocation = Location + DirectionVector * Distance;
+		//SetActorLocation(NewLocation);
+
+		AddActorWorldOffset(DirectionVector * Distance);
+	}
 }
 

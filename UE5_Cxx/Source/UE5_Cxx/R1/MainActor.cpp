@@ -29,7 +29,7 @@ void AMainActor::BeginPlay()
 	Actor = Cast<AR1Actor>(GetWorld()->SpawnActor(ActorClass));
 
 	// GetWorld()->DestroyActor(Actor);	// 즉시 삭제
-	Actor->SetLifeSpan(5.0f);	// n초 후 삭제
+	//Actor->SetLifeSpan(5.0f);	// n초 후 삭제
 }
 
 // Called every frame

@@ -29,4 +29,7 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UStaticMeshComponent> Box;
+
+	UPROPERTY(EditAnywhere, Category=Battle)
+	TObjectPtr<class AActor> Target;
 };
