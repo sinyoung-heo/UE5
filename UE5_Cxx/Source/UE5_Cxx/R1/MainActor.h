@@ -28,4 +28,7 @@ public:
 protected:
 	UPROPERTY()
 	TObjectPtr<AR1Actor> Actor;
+	
+	UPROPERTY()
+	TSubclassOf<AR1Actor> ActorClass;	// BP_R1Actor
 };
