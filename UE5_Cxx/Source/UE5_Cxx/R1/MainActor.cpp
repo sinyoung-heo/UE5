@@ -28,8 +28,8 @@ void AMainActor::BeginPlay()
 	//Actor = GetWorld()->SpawnActor<AR1Actor>(Location, Rotation);
 	Actor = Cast<AR1Actor>(GetWorld()->SpawnActor(ActorClass));
 
-	// GetWorld()->DestroyActor(Actor);	// Áï½Ã ÆÄ±«
-	Actor->SetLifeSpan(5.0f);	// nÃÊ ÈÄ ÆÄ±«
+	// GetWorld()->DestroyActor(Actor);	// ì¦‰ì‹œ ì‚­ì œ
+	Actor->SetLifeSpan(5.0f);	// nì´ˆ í›„ ì‚­ì œ
 }
 
 // Called every frame
