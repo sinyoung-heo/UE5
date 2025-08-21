@@ -7,6 +7,7 @@
 #include "R1Actor.generated.h"
 
 class UR1Object;
+class UStaticMeshComponent;
 
 UCLASS()
 class UE5_CXX_API AR1Actor : public AActor
@@ -26,5 +27,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TObjectPtr<UStaticMeshComponent> Box;
 
 };
