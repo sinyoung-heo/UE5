@@ -16,25 +16,11 @@ AR1Actor::AR1Actor()
 void AR1Actor::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	//Obj1 = NewObject<UR1Object>();
-	//Obj2 = NewObject<UR1Object>();
-	GEngine->ForceGarbageCollection(true);
 }
 
 // Called every frame
 void AR1Actor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//if (nullptr == Obj1)
-	//{
-	//	UE_LOG(LogTemp, Log, TEXT("Obj1 Deleted"));
-	//}
-
-	//if (nullptr == Obj2)
-	//{
-	//	UE_LOG(LogTemp, Log, TEXT("Obj2 Deleted"));
-	//}
 }
 
