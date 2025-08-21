@@ -4,19 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "R1Actor.generated.h"
+#include "MainActor.generated.h"
 
-class UR1Object;
-class UStaticMeshComponent;
+class AR1Actor;
 
 UCLASS()
-class UE5_CXX_API AR1Actor : public AActor
+class UE5_CXX_API AMainActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AR1Actor();
+	AMainActor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -27,6 +26,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	TObjectPtr<UStaticMeshComponent> Box;
+	UPROPERTY()
+	TObjectPtr<AR1Actor> Actor;
 };
