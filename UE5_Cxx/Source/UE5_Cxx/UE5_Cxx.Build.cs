@@ -11,7 +11,7 @@ public class UE5_Cxx : ModuleRules
         PublicIncludePaths.AddRange(new string[] 
 		{
             "UE5_Cxx",
-            "R1" 
+            "R1",
 		});
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
