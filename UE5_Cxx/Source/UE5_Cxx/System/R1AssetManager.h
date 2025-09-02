@@ -9,6 +9,8 @@
 
 class UR1AssetData;
 
+DECLARE_DELEGATE_TwoParams(FAsyncLoadCompletedDelegate, const FName&/*AssetName or Label*/, UObject*/*LoadedAsset*/);
+
 /**
  * 
  */
@@ -31,6 +33,9 @@ public:
 	static void LoadSyncByPath(const FSoftObjectPath& AssetPath);
 	static void LoadSyncByName(const FName& AssetName);
 	static void LoadSyncByLabel(const FName& Label);
+
+	static void LoadAsyncByPath(const FSoftObjectPath& AssetPath, FAsyncLoadCompletedDelegate CompletedDelegate = FAsyncLoadCompletedDelegate());
+	static void LoadAsyncByName(const FName& AssetName, FAsyncLoadCompletedDelegate CompletedDelegate = FAsyncLoadCompletedDelegate());
 
 	static void ReleaseByPath(const FSoftObjectPath& AssetPath);
 	static void ReleaseByName(const FName& AssetName);
