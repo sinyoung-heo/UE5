@@ -14,4 +14,10 @@ class UE5_CXX_API UR1GameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
+public:
+	UR1GameInstance(const FObjectInitializer& ObjectInitializer);
+
+public:
+	virtual void Init() override;
+	virtual void Shutdown() override;
 };
