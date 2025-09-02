@@ -5,6 +5,7 @@
 #include "R1LogChannels.h"
 
 UR1AssetManager::UR1AssetManager()
+	: Super()
 {
 }
 
