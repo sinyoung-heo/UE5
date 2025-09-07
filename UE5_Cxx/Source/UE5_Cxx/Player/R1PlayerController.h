@@ -30,5 +30,6 @@ private:
 	void Input_Attack(const FInputActionValue& InputValue);
 
 protected:
-
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UAnimMontage> AttackMontage;
 };
