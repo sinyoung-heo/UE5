@@ -33,6 +33,8 @@ void AR1PlayerController::BeginPlay()
 			SubSystem->AddMappingContext(InputData->InputMappingContext, 0);
 		}
 	}
+
+	R1Player = Cast<AR1Player>(GetCharacter());
 }
 
 void AR1PlayerController::SetupInputComponent()
@@ -58,6 +60,13 @@ void AR1PlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	TickCursorTrace();
+
+	if (GetCharacter()->GetMesh()->GetAnimInstance()->Montage_IsPlaying(nullptr) == false)
+	{
+		SetCreatureState(ECreatureState::Moving);
+	}
+
+	ChaseTargetAndAttack();
 }
 
 void AR1PlayerController::TickCursorTrace()
@@ -105,13 +114,66 @@ void AR1PlayerController::TickCursorTrace()
 	HighlightActor = LocalHighlightActor;
 }
 
+void AR1PlayerController::ChaseTargetAndAttack()
+{
+	if (TargetActor == nullptr)
+	{
+		return;
+	}
+
+	if (GetCreatureState() == ECreatureState::SKill)
+	{
+		return;
+	}
+
+	FVector Direction = TargetActor->GetActorLocation() - R1Player->GetActorLocation();
+	if (Direction.Length() < 250.0f)
+	{
+		GEngine->AddOnScreenDebugMessage(0, 1.0f, FColor::Cyan, TEXT("Attack"));
+		if (AttackMontage)
+		{
+			if (bMousePressed)
+			{
+				auto Rotator = UKismetMathLibrary::FindLookAtRotation(R1Player->GetActorLocation(), TargetActor->GetActorLocation());
+				R1Player->SetActorRotation(Rotator);
+
+				GetCharacter()->PlayAnimMontage(AttackMontage);
+				SetCreatureState(ECreatureState::SKill);
+
+				TargetActor = HighlightActor;
+			}
+			else
+			{
+				TargetActor = nullptr;
+			}
+		}
+	}
+	else
+	{
+		FVector WorldDirection = Direction.GetSafeNormal();
+		R1Player->AddMovementInput(WorldDirection, 1.0f, false);
+	}
+}
+
 void AR1PlayerController::OnInputStarted()
 {
 	StopMovement();
+	bMousePressed = true;
+	TargetActor = HighlightActor;
 }
 
 void AR1PlayerController::OnSetDestinationTriggered()
 {
+	if (GetCreatureState() == ECreatureState::SKill)
+	{
+		return;
+	}
+
+	if (TargetActor)
+	{
+		return;
+	}
+
 	FollowTime += GetWorld()->GetDeltaSeconds();
 
 	FHitResult Hit;
@@ -122,21 +184,48 @@ void AR1PlayerController::OnSetDestinationTriggered()
 		CachedDestination = Hit.Location;
 	}
 
-	auto ControlledPawn = GetPawn();
-	if (ControlledPawn)
+	if (R1Player)
 	{
-		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
-		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
+		FVector WorldDirection = (CachedDestination - R1Player->GetActorLocation()).GetSafeNormal();
+		R1Player->AddMovementInput(WorldDirection, 1.0, false);
 	}
 }
 
 void AR1PlayerController::OnSetDestinationReleased()
 {
+	bMousePressed = false;
+
+	if (GetCreatureState() == ECreatureState::SKill)
+	{
+		return;
+	}
+
 	if (FollowTime <= ShortPressThreshold)
 	{
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+		if (TargetActor == nullptr)
+		{
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+		}
 	}
 
 	FollowTime = 0.f;
+}
+
+ECreatureState AR1PlayerController::GetCreatureState()
+{
+	if (R1Player)
+	{
+		return R1Player->CreatureState;
+	}
+
+	return ECreatureState::None;
+}
+
+void AR1PlayerController::SetCreatureState(ECreatureState InState)
+{
+	if (R1Player)
+	{
+		R1Player->CreatureState = InState;
+	}
 }
