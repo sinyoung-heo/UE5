@@ -23,6 +23,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
+	virtual void PlayerTick(float DeltaTime) override;
+
+private:
+	void TickCursorTrace();
 
 private:
 	// Input handlers for SetDestination action
@@ -42,8 +46,12 @@ public:
 private:
 	FVector CachedDestination;
 	float FollowTime; // For how long it has been pressed
+	bool bMousePressed = false;
 
 protected:
-	
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class AR1Character> TargetActor;
 
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class AR1Character> HighlightActor;
 };
