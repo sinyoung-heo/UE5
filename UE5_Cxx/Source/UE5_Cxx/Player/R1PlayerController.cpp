@@ -69,6 +69,17 @@ void AR1PlayerController::PlayerTick(float DeltaTime)
 	ChaseTargetAndAttack();
 }
 
+void AR1PlayerController::HandleGamePlayEvent(FGameplayTag EventTag)
+{
+	if (EventTag.MatchesTag(R1GameplayTags::Event_Montage_Attack))
+	{
+		if (TargetActor)
+		{
+			TargetActor->OnDamaged(R1Player->FinalDamage, R1Player);
+		}
+	}
+}
+
 void AR1PlayerController::TickCursorTrace()
 {
 	if (bMousePressed)

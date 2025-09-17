@@ -10,3 +10,5 @@ enum class ECreatureState : uint8
 	SKill,
 	Dead,
 };
+
+#define D(x) if(GEngine) { GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan,x); }

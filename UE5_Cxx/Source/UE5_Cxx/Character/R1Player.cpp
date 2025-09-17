@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/R1PlayerController.h"
 
 AR1Player::AR1Player()
 	: Super()
@@ -45,6 +46,15 @@ void AR1Player::BeginPlay()
 void AR1Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AR1Player::HandleGamePlayEvent(FGameplayTag EventTag)
+{
+	AR1PlayerController* PC = Cast<AR1PlayerController>(GetController());
+	if (PC)
+	{
+		PC->HandleGamePlayEvent(EventTag);
+	}
 }
 
 void AR1Player::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
