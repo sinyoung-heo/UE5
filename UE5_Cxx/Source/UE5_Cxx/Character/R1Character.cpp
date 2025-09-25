@@ -2,18 +2,33 @@
 
 
 #include "R1Character.h"
+#include "Components/WidgetComponent.h"
+#include "UI/R1HpBarWidget.h"
 
 // Sets default values
 AR1Character::AR1Character()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	HpBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	HpBarComponent->SetupAttachment(GetRootComponent());
+
+	ConstructorHelpers::FClassFinder<UUserWidget> HealthBarWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprints/UI/WBP_HpBar.WBP_HpBar_C'"));
+	if (HealthBarWidgetClass.Succeeded())
+	{
+		HpBarComponent->SetWidgetClass(HealthBarWidgetClass.Class);
+		HpBarComponent->SetWidgetSpace(EWidgetSpace::Screen);
+		HpBarComponent->SetDrawAtDesiredSize(true);
+		HpBarComponent->SetRelativeLocation(FVector(0, 0, 100));
+	}
 }
 
 // Called when the game starts or when spawned
 void AR1Character::BeginPlay()
 {
 	Super::BeginPlay();
+	RefreshHpBarRatio();
 }
 
 // Called every frame
@@ -48,7 +63,8 @@ void AR1Character::OnDamaged(int32 Damage, TObjectPtr<AR1Character> Attacker)
 		OnDead(Attacker);
 	}
 	
-	D(FString::Printf(TEXT("%d"), Hp));
+	//D(FString::Printf(TEXT("%d"), Hp));
+	RefreshHpBarRatio();
 }
 
 void AR1Character::OnDead(TObjectPtr<AR1Character> Attacker)
@@ -57,5 +73,16 @@ void AR1Character::OnDead(TObjectPtr<AR1Character> Attacker)
 		return;
 
 	CreatureState = ECreatureState::Dead;
+}
+
+void AR1Character::RefreshHpBarRatio()
+{
+	if (HpBarComponent)
+	{
+		float ratio = (float)Hp / MaxHp;
+
+		auto HpBar = Cast<UR1HpBarWidget>(HpBarComponent->GetUserWidgetObject());
+		HpBar->SetHpRatio(ratio);
+	}
 }
 
