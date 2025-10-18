@@ -7,6 +7,8 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/R1PlayerController.h"
+#include "AbilitySystem/R1AbilitySystemComponent.h"
+#include "Player/R1PlayerState.h"
 
 AR1Player::AR1Player()
 	: Super()
@@ -41,6 +43,23 @@ void AR1Player::BeginPlay()
 	Super::BeginPlay();
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginOverlap);
+}
+
+void AR1Player::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	InitAbilitySystem();
+}
+
+void AR1Player::InitAbilitySystem()
+{
+	Super::InitAbilitySystem();
+
+	if (auto PS = GetPlayerState<AR1PlayerState>())
+	{
+		AbilitySystemComponent = Cast<UR1AbilitySystemComponent>(PS->GetAbilitySystemComponent());
+		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
+	}
 }
 
 void AR1Player::Tick(float DeltaTime)

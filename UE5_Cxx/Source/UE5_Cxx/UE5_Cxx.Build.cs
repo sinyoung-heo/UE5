@@ -21,6 +21,8 @@ public class UE5_Cxx : ModuleRules
 			"InputCore", 
 			"EnhancedInput", 
 			"GameplayTags",
+			"GameplayTasks",
+			"GameplayAbilities",
 			"NavigationSystem",
 			"AIModule",
 			"Niagara",
