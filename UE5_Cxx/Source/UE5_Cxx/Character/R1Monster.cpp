@@ -3,13 +3,15 @@
 
 #include "R1Monster.h"
 #include "AbilitySystem/R1AbilitySystemComponent.h"
+#include "AbilitySystem/Attribute/R1MonsterSet.h"
 
 AR1Monster::AR1Monster()
 	: Super()
 {
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
-	AbilitySystemComponent = CreateDefaultSubobject<UR1AbilitySystemComponent>("AbilitySystemComponent");
 	
+	AbilitySystemComponent = CreateDefaultSubobject<UR1AbilitySystemComponent>("AbilitySystemComponent");
+	AttributeSet = CreateDefaultSubobject<UR1MonsterSet>("MonsterSet");
 }
 
 void AR1Monster::BeginPlay()

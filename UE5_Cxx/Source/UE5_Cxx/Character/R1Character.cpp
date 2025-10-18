@@ -5,6 +5,7 @@
 #include "Components/WidgetComponent.h"
 #include "UI/R1HpBarWidget.h"
 #include "AbilitySystem/R1AbilitySystemComponent.h"
+#include "AbilitySystem/Attribute/R1AttributeSet.h"
 
 // Sets default values
 AR1Character::AR1Character()
@@ -57,7 +58,11 @@ void AR1Character::UnHighlight()
 
 void AR1Character::OnDamaged(int32 Damage, TObjectPtr<AR1Character> Attacker)
 {
+	float Hp = AttributeSet->GetHealth();
+	float MaxHp = AttributeSet->GetMaxHealth();
+
 	Hp = FMath::Clamp(Hp - Damage, 0, MaxHp);
+	AttributeSet->SetHealth(Hp);
 
 	if (Hp == 0)
 	{
@@ -78,8 +83,10 @@ void AR1Character::OnDead(TObjectPtr<AR1Character> Attacker)
 
 void AR1Character::RefreshHpBarRatio()
 {
-	if (HpBarComponent)
+	if (HpBarComponent && AttributeSet)
 	{
+		float Hp = AttributeSet->GetHealth();
+		float MaxHp = AttributeSet->GetMaxHealth();
 		float ratio = (float)Hp / MaxHp;
 
 		auto HpBar = Cast<UR1HpBarWidget>(HpBarComponent->GetUserWidgetObject());
