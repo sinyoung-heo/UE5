@@ -141,22 +141,20 @@ void AR1PlayerController::ChaseTargetAndAttack()
 	if (Direction.Length() < 250.0f)
 	{
 		GEngine->AddOnScreenDebugMessage(0, 1.0f, FColor::Cyan, TEXT("Attack"));
-		if (AttackMontage)
+		if (bMousePressed)
 		{
-			if (bMousePressed)
-			{
-				auto Rotator = UKismetMathLibrary::FindLookAtRotation(R1Player->GetActorLocation(), TargetActor->GetActorLocation());
-				R1Player->SetActorRotation(Rotator);
+			auto Rotator = UKismetMathLibrary::FindLookAtRotation(R1Player->GetActorLocation(), TargetActor->GetActorLocation());
+			R1Player->SetActorRotation(Rotator);
+			
+			R1Player->ActivateAbility(R1GameplayTags::Ability_Attack);
 
-				GetCharacter()->PlayAnimMontage(AttackMontage);
-				SetCreatureState(ECreatureState::SKill);
+			SetCreatureState(ECreatureState::SKill);
 
-				TargetActor = HighlightActor;
-			}
-			else
-			{
-				TargetActor = nullptr;
-			}
+			TargetActor = HighlightActor;
+		}
+		else
+		{
+			TargetActor = nullptr;
 		}
 	}
 	else

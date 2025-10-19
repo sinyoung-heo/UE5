@@ -11,4 +11,5 @@ namespace R1GameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Event_Montage_End, "Event.Montage.End");
 	UE_DEFINE_GAMEPLAY_TAG(Event_Montage_Attack, "Event.Montage.Attack");
 
+	UE_DEFINE_GAMEPLAY_TAG(Ability_Attack, "Ability.Attack");
 }
