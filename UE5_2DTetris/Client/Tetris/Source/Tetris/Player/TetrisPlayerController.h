@@ -3,17 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameMode.h"
-#include "TetrisGameMode.generated.h"
+#include "GameFramework/PlayerController.h"
+#include "TetrisPlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TETRIS_API ATetrisGameMode : public AGameMode
+class TETRIS_API ATetrisPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
-public:
-	ATetrisGameMode();
 };
